@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load user_tags %}
+{% block title %}{{ request.user.username }}的个人信息|蓝白社区{% endblock %}
+{% block content %}
+
+    <style>
+        .avatar {
+            width: 100px;
+            height: 100px;
+        }
+
+        * {
+            margin: 0 0;
+        }
+
+        .list-group a {
+            background-color: #f7f7f7;
+        }
+    </style>
+    <div class="container">
+
+        <div class="row">
+            <div class="list-group col-md-2 text-center">
+                <a id="tab1" href="javascript:;" class="tab list-group-item active">个人资料</a>
+                <a id="tab2" href="javascript:;" class="tab list-group-item">修改邮箱</a>
+                <a id="tab3" href="javascript:;" class="tab list-group-item">修改密码</a>
+                <a id="tab4" href="javascript:;" class="tab list-group-item">个人隐私</a>
+            </div>
+            <div class="col-md-6">
+                <div id="tab-item1" class="tab-item">
+                    <div class="row">
+                        <div class="col-md-12 offset-1">
+                            <h3>个人资料</h3>
+                            <hr>
+                            <div class="flex-fill">
+                                <img src="{{ profile.avatar.url }}" class="rounded-circle avatar"/>
+                                <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#myModal">
+                                    修改头像
+                                </button>
+                                <form action="." method="post" id="avaterForm" class="form"
+                                      enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" id="new_avatar" name="avatar" style="display: none">
+                                </form>
+                                <br>
+                            </div>
+                            <p>ID：{{ request.user.username }}</p>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-1">
+                            <form method="post" action="." class="col-md-12">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="nickname">昵称：</label>
+                                    <input type="text" class="form-control" id="nickname" name="nickname"
+                                           value="{{ profile.nickname }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gender">性别：</label><br>
+                                    {% if profile.gender == "男" %}
+                                        <label class="radio-inline "><input type="radio" value="男" checked
+                                                                            name="gender">男</label>
+                                        <label class="radio-inline offset-3"><input type="radio" value="女"
+                                                                                    name="gender">女</label>
+                                    {% else %}
+                                        <label class="radio-inline"><input type="radio" value="男"
+                                                                           name="gender">男</label>
+                                        <label class="radio-inline offset-3"><input type="radio" value="女" checked
+                                                                                    name="gender">女</label>
+                                    {% endif %}
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">年龄：</label>
+                                    <input type="text" class="form-control" id="age" name="age"
+                                           value="{{ profile.age }}">
+                                </div>
+                                <div class="form-group  ">
+                                    <label for="sign">个性签名</label>
+                                    <textarea class="form-control" id="sign" name="sign"
+                                              rows="3" placeholder="简单的介绍下自己吧~">{{ profile.sign }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary " onclick="bs4pop.notice('正在提交...')">提交
+                                </button>
+                            </form>
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">上传头像</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <span>
+                                                <img src="" alt='新头像'
+                                                     class="rounded-circle avatar new_avatar_pre">
+                                            </span>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <!--点击选择文件-->
+                                            <button type="button" class="btn btn-default update_avatar">本地上传</button>
+                                            <!--点击提交表单-->
+                                            <button type="button" class="btn btn-primary update_img">提交</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-item2" class="tab-item">
+                    <div class="col-md-8 flex">
+                        <h3>修改邮箱</h3>
+                        <hr>
+                    </div>
+                    <div class="col-md-8 text-input">
+                        <span><small>验证码会发送到您的注册邮箱{{ request.user.email|slice:3 }}***中<br>注意：更改邮箱之后需要重新激活邮箱，验证失败会导致您账号登录不成功</small></span>
+                        <form action="" class="col-md-6" id="update_email">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="new_email">新邮箱：</label>
+                                <input type="email" class="form-control" id="new_email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="yzm">验证码：</label>
+                                <input type="text" maxlength="6" class="form-control" id="yzm" name="yzm"
+                                       value="" required>
+                                <a class="send_update_email_yzm" href="javascript:;">获取验证码</a>
+                            </div>
+
+                        </form>
+                        <button class="btn btn-success update_email">提交</button>
+                    </div>
+                </div>
+                <div id="tab-item3" class="tab-item">
+                    <div class="col-md-8 flex">
+                        <h3>修改密码</h3>
+                        <hr>
+                    </div>
+                    <div class="col-md-8">
+                        <form action="/accounts/update_password/" method="post" class="col-md-6 update_password_form">
+                            {% csrf_token %}
+                            <div class="form-group ">
+                                <label for="new_pwd">新密码：</label>
+                                <input type="password" class="form-control" id="new_pwd" name="new_password" value=""
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="re_new_pwd">确认密码：</label>
+                                <input type="password" class="form-control" id="re_new_pwd" name="re_password" value=""
+                                       required>
+                            </div>
+                        </form>
+                        <button class="btn btn-success update_password">提交</button>
+
+
+                    </div>
+                </div>
+                <div id="tab-item4" class="tab-item">
+                    <div class="col-md-8 flex">
+                        <h3>个人隐私</h3>
+                        <hr>
+                    </div>
+                    <div class="col-md-8">
+                        <form method="post" action=".">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="is_display">是否在个人主页显示隐私信息：</label><br>
+
+                                <label class="radio-inline "><input type="radio" value="True"
+                                                                    {% if profile.is_display %}checked{% endif %}
+                                                                    name="is_display">显示</label>
+                                <label class="radio-inline offset-3"><input type="radio" value="False"
+                                                                            {% if not profile.is_display %}checked{% endif %}
+                                                                            name="is_display">不显示</label>
+
+
+                            </div>
+                            <div class="form-group ">
+                                <label for="telephone">身份or职业</label>
+                                <input type="text" class="form-control" id="site" name="occupation"
+                                       value="{{ profile.occupation }}">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="qq">qq：</label>
+                                <input type="text" class="form-control" id="qq" name="qq"
+                                       value="{{ profile.qq }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="telephone">电话</label>
+                                <input type="text" class="form-control" id="telephone" name="telephone"
+                                       value="{{ profile.telephone }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="github">GitHub</label>
+                                <input type="text" placeholder="填写链接哦~" class="form-control" id="github" name="github"
+                                       value="{{ profile.github }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="site">个人站点</label>
+                                <input type="text" placeholder="填写链接哦~" class="form-control" id="site" name="site"
+                                       value="{{ profile.site }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary " onclick="bs4pop.notice('正在提交...')">提交
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <script src="{% static '/js/base.min.js' %}"></script>
+    <script src="{% static '/js/profile.min.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} 登录|蓝白社区 {% endblock title %}
+{% block content %}
+    <link rel="stylesheet" href="{% static  "css/signin.css" %}">
+    <div class="container text-center">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-signin">
+                     {% csrf_token %}
+                <img class="mb-5" src="{% static "img/logo_font.png" %}" alt="LOGO" width="130px">
+                <div class="form-group">
+                    <label for="inputUsername" class="sr-only">用户名</label>
+                    <input autocomplete type="text" id="username" class="form-control" placeholder="用户ID或邮箱" required
+                           autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="sr-only">密码</label>
+                    <input autocomplete type="password" id="password" class="form-control" placeholder="用户密码" required>
+                </div>
+            </form>
+            <div class="">
+                <button class="btn btn-lg btn-primary login" id="login" value="Login">登录</button>
+                <a class="btn btn-lg btn-primary reg" href="{% url "accounts:reg" %}">注册</a><br>
+                <a href="javascript:;" data-toggle="modal" data-backdrop="false" data-target="#forget_password_modal">忘记密码</a>
+            </div>
+            <hr>
+               
+            <div>
+                {% load oauth_tags %}
+                {% load_oauth_applications request %}
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" tabindex="-1" id="forget_password_modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">重置密码</h4>
+                    <button type='button'  class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true" >&times;</span></button>
+                </div>
+
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+
+                    <form>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">注册邮箱</label>
+                            <input type="email" autocomplete class="form-control" name="email" id="email"
+                                   placeholder="注册邮箱">
+                        </div>
+                        <div class="form-group ">
+                            <label for="new_pwd">新密码：</label>
+                            <input type="password" class="form-control" id="new_pwd" name="new_password"
+                                   autocomplete>
+                        </div>
+                        <div class="form-group">
+                            <label for="re_new_pwd">确认密码：</label>
+                            <input type="password" class="form-control" id="re_new_pwd" name="re_password"
+                                   autocomplete>
+                        </div>
+                        <div class="form-group">
+                            <label for="re_new_pwd">验证码</label>
+                            <input type="text" class="form-control" maxlength="6" id="yzm" name="yzm">
+                        </div>
+
+                    </form>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary reset_password">确认修改</button>
+                        <a href="javascript:;" class="send_reset_password_yzm">获取验证码</a>
+                    </div>
+                    {% csrf_token %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <script src="{% static "js/login.js" %}"></script>
+{% endblock %}

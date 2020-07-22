@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load user_tags %}
+{% block title %}
+    消息通知
+{% endblock title %}
+<style>
+    .date:before {
+        content: "\f017";
+        vertical-align: 4%;
+        margin-right: 3px;
+        font-size: 15px;
+        color: #ccc;
+    }
+</style>
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="list-group col-md-2 text-center">
+                <a id="tab1" href="javascript:;" class="tab list-group-item active">未读消息 {% if msg_unread.count > 0 %}
+                    <span class="badge badge-danger">{{ msg_unread.count }}</span>
+                {% endif %}</a>
+                <a id="tab2" href="javascript:;" class="tab list-group-item">系统通知</a>
+                <a id="tab3" href="javascript:;" class="tab list-group-item">评论通知</a>
+                <a id="tab4" href="javascript:;" class="tab list-group-item">已读消息</a>
+            </div>
+            <div class="col-md-8">
+                <div id="tab-item1" class="tab-item">
+                    <div class="row">
+                        <h2>未读消息</h2>
+                        <a href="{% url 'message:message-update' %}" class="ml-auto">标记所有为已读</a>
+                    </div>
+                    <hr>
+                    <ul class="list-group">
+                        {% for notice in msg_unread %}
+                            <li class="list-group-item" id="notice_link">
+                                <a
+                                        href="{% url "message:message-update" %}?article_id={{ notice.target.id }}&msg_id={{ notice.id }}&comment_id={{ notice.action_object.id }}"
+                                        target="_blank">
+                                <span style="color: #5897fb;">
+                                    {{ notice.actor.id| nickname }}
+                                </span>
+                                    <span style="color: #01a252;"></span> {{ notice.verb }}
+                                </a>
+                                {{ notice.timestamp|date:"Y/m/d H:i" }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div id="tab-item2" class="tab-item">
+                    <div class="row">
+                        <h2>系统通知</h2>
+                        <a href="{% url 'message:message-update' %}" class="ml-auto">标记所有为已读</a>
+                    </div>
+                    <hr>
+                    <ul class="list-group">
+                        {% for notice in msg_unread %}
+                            <li class="list-group-item" id="notice_link">
+                                <a
+                                        href="{% url "message:message-update" %}?article_id={{ notice.target.id }}&msg_id={{ notice.id }}&comment_id={{ notice.action_object.id }}"
+                                        target="_blank">
+                                <span style="color: #5897fb;">
+                                    {{ notice.actor.id| nickname }}
+                                </span>
+                                    <span style="color: #01a252;"></span> {{ notice.verb }}
+                                </a>
+                                {{ notice.timestamp|date:"Y/m/d H:i" }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div id="tab-item3" class="tab-item">
+                    <div class="row">
+                        <h2>评论点赞</h2>
+                        <a href="{% url 'message:message-update' %}" class="ml-auto">标记所有为已读</a>
+                    </div>
+                    <hr>
+                    <ul class="list-group">
+                        {% for notice in msg_unread %}
+                            <li class="list-group-item" id="notice_link">
+                                <a
+                                        href="{% url "message:message-update" %}?article_id={{ notice.target.id }}&msg_id={{ notice.id }}&comment_id={{ notice.action_object.id }}"
+                                        target="_blank">
+                                <span style="color: #5897fb;">
+                                    {{ notice.actor.id| nickname }}
+                                </span>
+                                    <span style="color: #01a252;"></span> {{ notice.verb }}
+                                </a>
+                                {{ notice.timestamp|date:"Y/m/d H:i" }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div id="tab-item4" class="tab-item">
+                    <div class="row">
+                        <h2>已读消息</h2>
+                        <button class="btn btn-link ml-auto del-all">清空所有已读</button>
+                    </div>
+                    <hr>
+                    <ul class="list-group">
+                        {% for notice in msg_read %}
+                            <li class="list-group-item" id="notice_link">
+                                    <span style="color: #5897fb;">
+                                        {{ notice.actor.username }}：
+                                    </span>
+                                {{ notice.verb }}
+                                <small><span class="btn btn-link del" id="{{ notice.id }}">删除</span></small>
+                                <span class="date">{{ notice.timestamp|date:'yy-m-d H:m' }}</span>
+                            </li>
+                        {% endfor %}
+                        {% csrf_token %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 未读通知列表 -->
+    </div>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/message.js' %}"></script>
+
+{% endblock content %}
+
+

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load user_tags %}
+{% load blog_tools %}
+{% load comments_tags %}
+{% load static %}
+{% block description %}
+    <meta data-n-head="true" data-hid="description" name="description"
+          content="蓝白社区,致力于分享IT技术,原创博客、技术论坛、资源共享等,提供原创、优质、完整内容的IT技术分享社区,社区创建人期待与您一起共建更加优质的社区环境">
+    <meta name="keywords" content="{{ search }}|IT技术分享，博客，IT资源共享，蓝白社区">
+{% endblock %}
+
+{% block title %}{% if search %}{{ search }}|{% endif %}蓝白社区|致力于IT技术分享的社区{% endblock %}
+
+
+{% block artice %}
+    <style>
+        .img-avatar {
+            color: #D4D4D4;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-top: 0;
+            background-color: #eee;
+            vertical-align: top;
+        }
+
+        .icon-my {
+            padding: 0 2px;
+        }
+
+        .icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .page {
+            margin-bottom: 40px;
+        }
+
+    </style>
+    <div class="container">
+        {% if search %}
+            <small>您搜索的关键字为：<b>{{ search }}</b></small>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                {% categorys %}
+                {% for blog in blog_list %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            分类：<a href="" class="badge badge-primary">{{ blog.category }}</a><br>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <span class="badge badge-danger">{{ blog.blog_type }}</span>
+                                <a href="{% url 'blog:blog-detail' blog.id %}"
+                                   class="card-link font-weight-bold">{{ blog.title }}</a>
+                            </h5>
+                            <p class="card-text" style="margin-left: 3rem">{{ blog.content|slice:100 }}...</p>
+                        </div>
+                        <div class="card-footer">
+                            <span style="float:left">
+                                <img class="img-avatar" src="{{ blog.author.id|avatar_url }}" alt="">
+                            <span style="margin-left:6px;line-height: 2.5rem">
+                            <a href="/blog/{{ blog.author.username }} " style="top: 6px"><span
+                                    class="badge badge-success">{{ blog.author.id|nickname }}</span></a>发布于{{ blog.modify_time|blog_pub_time }}
+                            </span>
+                            </span>
+
+                            <span
+                                    style="float: right;line-height: 2.5rem">
+                            <span class="icon-my icon-eye">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-kejian"></use>
+                            </svg>
+                                {{ blog.click_nums }}</span>
+                            <span class="icon-my icon-zan">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-zan-red"></use>
+                            </svg>
+                                {{ blog.like }}</span>
+                            <span class="icon-my icon-say">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-pinglun"></use>
+                            </svg>
+                                {% comment_blog_count blog.id %}</span>
+                        </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {% if blog_list.paginator.num_pages > 0 %}
+                    <div class="page">
+                            <span class="step-links text-center" style="display: inline-block">
+                        {% if blog_list.has_previous %}
+                            <a href="?page=1&search={{ search }}" class="btn btn-dark">
+                                首页
+                            </a>
+                            {% if blog_list.number != 2 %}
+                                <a href="?page={{ blog_list.previous_page_number }}&&search={{ search }}"
+                                   class="btn btn-secondary">
+                                {{ blog_list.previous_page_number }}
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                                <span class="current btn btn-success d-inline-block active">
+                                    {% if blog_list.number is 1 %}
+                                        首页
+                                    {% elif blog_list.number == blog_list.paginator.num_pages %}
+                                        尾页
+                                    {% else %}
+                                        {{ blog_list.number }}
+
+                                    {% endif %}
+
+                                </span>
+
+                                {% if blog_list.has_next %}
+                                    <a href="?page={{ blog_list.next_page_number }}&search={{ search }}"
+                                       class="btn btn-secondary">
+                                            {{ blog_list.next_page_number }}
+                                    </a>
+                                    <span class="text-dark">...</span>
+                                    <a href="?page={{ blog_list.paginator.num_pages }}&search={{ search }}"
+                                       class="btn btn-dark">
+                                            尾页
+                                        </a>
+                                {% endif %}
+                            </span>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

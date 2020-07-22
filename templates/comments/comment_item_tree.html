@@ -1,0 +1,96 @@
+<style>
+    .author-avatar {
+        color: #D4D4D4;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-top: 0;
+        background-color: #eee;
+        vertical-align: top;
+        float: left;
+        margin-right: 10px;
+    }
+</style>
+{% load user_tags %}
+{% load blog_tools %}
+{% load comments_tags %}
+<li class="comment even thread-even depth-{{ depth }} parent" id="comment-{{ comment_item.pk }}"
+    style="margin-left: {% widthratio depth 1 3 %}rem">
+    <div id="div-comment-{{ comment_item.pk }}" class="comment-body">
+        <div class="comment-author vcard">
+            <img alt=""
+                 src="{{ comment_item.owner.id|avatar_url }}"
+                 srcset="{{ comment_item.owner.id|avatar_url }}"
+                 class="author-avatar">
+            <cite class="fn">
+                <a rel="nofollow" style="line-height: 35px"
+                   href="{% url 'blog:blog-author' comment_item.owner.username %}"
+                   rel="external nofollow"
+                   class="url">{{ comment_item.owner.id|nickname }}
+                </a>：<span>{{ comment_item.content }}</span>
+            </cite>
+        </div>
+        <div class="comment-meta commentmetadata">
+            {{ comment_item.created_time|blog_pub_time }}
+        </div>
+        <div class="reply">
+            <a rel="nofollow" class="comment-reply-link"
+               href="javascript:void(0)"
+               onclick="do_reply({{ comment_item.pk }},'回复 {{ comment_item.owner.id|nickname }}')"
+               aria-label="回复 {{ comment_item.owner.id|nickname }}">
+                回复
+            </a>
+            {% if request.user == comment_item.blog.author or request.user == comment_item.owner %}
+                <a rel="nofollow" class="comment-reply-link del"
+                   href="javascript:void(0)"
+                   onclick="del({{ comment_item.id }})"
+                >
+                    删除
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+</li>
+{% query blog_comments parent_comment=comment_item as cc_comments %}
+{% for cc in cc_comments %}
+    {% with comment_item=cc template_name="comments/comment_item_tree.html" %}
+        {% with depth=depth|add:1 %}
+            {% include template_name %}
+        {% endwith %}
+    {% endwith %}
+{% endfor %}
+{% csrf_token %}
+
+<script>
+
+    function do_reply(parentid, text) {
+        $(".parent_comment_id").val(parentid);
+        $("#commentform").appendTo($("#div-comment-" + parentid));
+        $('.content').addClass('open');
+        $('.content').attr('placeholder', text);
+        $("#reply-title").hide();
+        $("#cancel_comment").show();
+    };
+
+    function del(id) {
+        let token = $('[name="csrfmiddlewaretoken"]').attr("value");
+        $.ajax({
+            url: '/comment/delete/',
+            type: 'post',
+            data: {
+                "csrfmiddlewaretoken": token,
+                'id': id,
+            },
+            success: function (data) {
+                bs4pop.notice(data.msg, {type: data.flag ? 'success' : 'danger', position: 'topcenter'});
+                if (data.flag) {
+                    setTimeout(function () {
+                        window.location.reload()
+                    }, 500)
+                }
+            }
+        });
+    }
+</script>

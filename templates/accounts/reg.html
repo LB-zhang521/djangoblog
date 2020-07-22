@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}注册{% endblock %}
+{% block content %}
+
+    <link rel="stylesheet" href="{% static "css/base.css" %}"/>
+    <style>
+        #picyzm {
+            width: 100px;
+            height: 30px;
+            display: inline-grid;
+            margin-top: 5px;
+        }
+    </style>
+
+    <div id="reg" class="container w960 mt20">
+        <div class="alertr alert-dismissible fade show">
+        </div>
+        <div id="processor">
+            <ol class="processorBox oh">
+                <li class="current">
+                    <div class="step_inner fl">
+                        <span class="icon_step">1</span>
+                        <h4>填写基本信息</h4>
+                    </div>
+                </li>
+                <li>
+                    <div class="step_inner">
+                        <span class="icon_step">2</span>
+                        <h4>邮箱激活</h4>
+                    </div>
+                </li>
+            </ol>
+
+        </div>
+        <div class="content">
+            <div id="step1" class="step hide">
+                <form id="step1_frm">
+                    {% csrf_token %}
+                    <div class="frm_control_group">
+                        <label class="frm_label">用户名</label>
+                        <div class="frm_controls">
+                            <input type="text" autocomplete class="frm_input username" placeholder="数字和字母组合6~16位之间"
+                                   maxlength="16"/>
+                            <p class="frm_tips"></p>
+                        </div>
+                    </div>
+                    <div class="frm_control_group">
+                        <label class="frm_label">邮箱</label>
+                        <div class="frm_controls">
+                            <input type="email" autocomplete class="frm_input email" maxlength="30"/>
+                            <p class="frm_tips"></p>
+                        </div>
+                    </div>
+                    <div class="frm_control_group">
+                        <label class="frm_label">密码</label>
+                        <div class="frm_controls">
+                            <input type="password" name="password" autocomplete placeholder="密码最少六位" class="frm_input passwd"/>
+                            <p class="frm_tips"></p>
+                        </div>
+                    </div>
+                    <div class="frm_control_group">
+                        <label class="frm_label">再次输入密码</label>
+                        <div class="frm_controls">
+                            <input type="password" autocomplete name="password2" class="frm_input passwd2"/>
+                        </div>
+                    </div>
+                    <div class="frm_control_group">
+                        <label class="frm_label">验证码</label>
+                        <div class="frm_controls verifycode">
+                            <input type="text" name="" class="frm_input verifyCode" maxlength="4"/>
+                        </div>
+                        <span id="picyzm" type="blend"></span>
+                    </div>
+
+                </form>
+                <div class="toolBar">
+                    <button id="nextBtn" class="btn btn-primary">下一步</button>
+                </div>
+            </div>
+            <div id="step2" class="step hide">
+                <div class="w330">
+                    <strong class="f16">亲爱的<span class="zc_username"></span>感谢注册，激活邮件已发送至你的注册邮箱 : <br/><span
+                            class="zc_email"></span></strong>
+                    <p class="c7b">请进入邮箱查看邮件，点击链接即可激活账号</p>
+                    <p class="c7b mt20">没有收到邮件？</p>
+                    <p>1. 请检查邮箱地址是否正确，你可以返回 <a href="#" class="c46">重新注册</a></p>
+                    <p>2. 检查你的邮件垃圾箱</p>
+                    <p>3. 若仍未收到确认，请尝试
+                        <a class="" id="re_email" href="javascript:;">重新获取邮件内容</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="{% static "js/vericode.js" %}"></script>
+    <script src="{% static "js/reg.min.js" %}"></script>
+
+{% endblock %}

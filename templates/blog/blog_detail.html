@@ -1,0 +1,143 @@
+{% extends 'base.html' %}{% load static %}
+{% load user_tags %}
+{% load blog_tools %}
+{% block description %}
+    <meta name="keywords" content="{{ blog.title }}|{{ blog.category }}|
+            {% for foo in blog.tag.values %}{{ foo.name }}|{% endfor %}蓝白社区">
+
+    <meta name="description" content="{{ blog.title|slice:":50" }}|{{ blog.content|slice:50 }}|蓝白社区">
+{% endblock %}
+{% block title %}{{ blog.title }}|{{ blog.author.id|nickname }}的博客|蓝白社区{% endblock %}
+{% block artice %}
+    <link rel="stylesheet" href="{% static 'edittormd/css/editormd.min.css' %}">
+    <link rel="stylesheet" href="{% static 'edittormd/css/editormd.preview.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/comments.css' %}">
+    <div id="toc">
+        <div id="sideber" class='d-none d-md-block'>
+            <h4>博文目录</h4>
+            <div class="markdown-body editormd-preview-container d-none d-md-block" id="custom-toc-container">
+                #custom-toc-container
+            </div>
+        </div>
+    </div>
+    <div class="container container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>{{ blog.title }}</h2>
+                <div class="article-info-box">
+                    <div class="article-bar-top">
+                        {% if blog.blog_type == '原创' %}
+                            <img class="article-type-img" src="{% static 'img/original.png' %}"
+                                 alt="原创">
+                        {% else %}
+                            <img class="article-type-img" src="{% static 'img/reprint.png' %}"
+                                 alt="转载">
+                        {% endif %}
+
+                        <div class="bar-content">
+                            <a class="follow-nickName" href="{% url 'blog:blog-author' blog.author %}" target="_blank"
+                               rel="noopener">{{ blog.author }}</a>
+                            <span class="time">{{ blog.modify_time }}</span>
+                            <div class="up-time">
+                                <span>最后发布:{{ blog.modify_time }}</span><span>首发:{{ blog.create_time }}</span>
+                            </div>
+                            <span class="icon-my icon-eye">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-kejian"></use>
+                            </svg>
+                                {{ blog.click_nums }}</span>
+
+                            <span class="icon-my icon-zan">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-zan-red"></use>
+                            </svg>
+                                {{ blog.like }}</span>
+
+                            </a>
+                        </div>
+                    </div>
+                    <div class="blog-tags-box">
+
+                        <small style="margin-top: 2px">博文分类：</small>
+                        <div class="tags-box artic-tag-box">
+                        <span class="label">{{ blog.category }}
+                        </span>
+                        </div>
+                        <small style="margin-top: 2px">博文标签：</small>
+                        {% for foo in blog.tag.values %}
+                            <div class="tags-box artic-tag-box">
+                                <span class="label">{{ foo.name }}</span>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="slide-content-box">
+                        <div class="all-tags-box">
+                        </div>
+                        <div class="article-copyright">
+                            <div class="creativecommons">
+                                <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"></a>
+                            </div>
+                            <div class="creativecommons">
+                                版权声明：本文为博主[{{ blog.author.username }}]原创文章，遵循<a
+                                    href="http://creativecommons.org/licenses/by/4.0/" target="_blank"
+                                    rel="noopener">
+                                CC 4.0 BY </a>版权协议，转载请附上原文出处链接和本声明。
+                            </div>
+                            <div class="article-source-link">
+                                本文链接：<a
+                                    href="{% url 'blog:blog-detail' blog.id %}">http://blog.bglb.work{% url 'blog:blog-detail' blog.id %}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="operating">
+                        {% if blog.author == request.user %}
+                            <a class="slide-toggle" href="/blog/blog-edit/?id={{ blog.id }}">编辑</a>
+                        {% endif %}
+                        <a class="href-article-edit slide-toggle">版权</a>
+                    </div>
+                </div>
+
+                <div id="editormd" data-id="{{ blog.id }}">
+                    <textarea style="display:none;">{{ blog.content|safe }}</textarea>
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                {% csrf_token %}
+                <button class="btn btn-light click">点赞<span
+                        class="badge click_nums badge-primary">{{ blog.like }}</span>
+                </button>
+                <button class="btn btn-primary">打赏
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% include 'comments/comment_list.html' %}
+                {% if request.user.is_authenticated %}
+                    {% include 'comments/post_comment.html' %}
+                {% else %}
+                    请 <a href="/accounts/login/">登录</a>后评论
+                {% endif %}
+            </div>
+        </div>
+
+
+    </div>
+    <script src="{% static 'edittormd/lib/marked.min.js' %}"></script>
+    <script src="{% static 'edittormd/lib/prettify.min.js' %}"></script>
+    <script src="{% static 'edittormd/lib/raphael.min.js' %}"></script>
+    <script src="{% static 'edittormd/lib/underscore.min.js' %}"></script>
+    <script src="{% static 'edittormd/lib/sequence-diagram.min.js' %}"></script>
+    <script src="{% static 'edittormd/lib/flowchart.min.js' %}"></script>
+    <script src="{% static 'edittormd/lib/jquery.flowchart.min.js' %}"></script>
+    <script src="{% static 'edittormd/editormd.min.js' %}"></script>
+    <script src="{% static 'js/blog_detail.js' %}"></script>
+
+{% endblock %}

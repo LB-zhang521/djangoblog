@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+{% load user_tags %}
+{% load blog_tools %}
+{% load comments_tags %}
+{% block description %}
+    <meta data-n-head="true" data-hid="description" name="description"
+          content="蓝白社区,致力于分享IT技术,原创博客、技术论坛、资源共享等,提供原创、优质、完整内容的IT技术分享社区,社区创始人:半根蓝白,社区创建人期待与您一起共建更加优质的社区环境">
+    <meta name="keywords" content="IT技术分享，博客，IT资源共享，蓝白社区，半根蓝白">
+
+{% endblock %}
+{% block title %}{{ user.id|nickname }}的博客主页|蓝白社区{% endblock %}
+
+{% block artice %}{% load static %}
+    <style>
+        .blog-expert-recommend li {
+            float: left;
+            margin-left: 10px;
+            padding: 4px;
+        }
+
+        .container .author-avatar {
+            color: #D4D4D4;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-top: 0;
+            background-color: #eee;
+            vertical-align: top;
+            float: left;
+            margin-right: 10px;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="{% static 'js/base.js' %}"></script>
+    <div class="container offset-md-2">
+        <div class="row">
+            <div class="col-md-4">
+                <img class="author-avatar" src="{{ user.id|avatar_url }}" alt="">
+                <div style="float: left">
+                    <h2>{{ user.username }}</h2>
+                    <p>{{ user.id|sign }}</p>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+            {% if request.user.id == user.id %}
+                <div class="col-md-8">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <button id="tab1" class="nav-link tab active">公开
+                                <span class="badge badge-info">{{ blog_list.count }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button id="tab2" class="nav-link tab ">私密
+                                <span class="badge badge-info">{{ blog_list_private.count }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button id="tab3" class="nav-link tab">草稿箱
+                                <span class="badge badge-info">{{ blog_list_drafts.count }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button id="tab4" class="nav-link tab">回收站
+                                <span class="badge badge-info">{{ blog_list_del.count }}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <div class="card col-md-10 bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">博主信息</h5>
+                            <ul style="float: left;" class="mb-4">
+                                <li>昵称<span class="ml-1">{{ user.id|nickname }}</span>
+                                </li>
+                                <li>性别<span class="ml-1">{{ user.id|gender }}</span>
+                                </li>
+                                <li>年龄<span class="ml-1">{{ user.id|age }}</span>
+                                </li>
+                                <li>身份<span class="ml-1">{{ user.id|occupation }}</span>
+                                </li>
+                                {% if user.id|is_display %}
+                                    <li>
+                                        联系方式<span class="ml-1">{{ user.id|telephone }}</span>
+                                    </li>
+                                    <li>
+                                        qq<span class="ml-1">{{ user.id|qq }}</span>
+                                    </li>
+                                    <li>
+                                        github<span class="ml-1">{{ user.id|github }}</span>
+                                    </li>
+                                    <li>
+                                        site<span class="ml-1">{{ user.id|site }}</span>
+                                    </li>
+                                {% else %}
+                                    <li>作者隐藏了个人隐私</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="card col-md-10 bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">博文总揽</h5>
+                            <ul style="float: left;" class="blog-expert-recommend">
+                                <li><a href="javascript:;" class="card-link">原创</a><br>
+                                    <span class="ml-2">{{ blog_list|blog_original_count }}</span>
+                                </li>
+                                <li><a href="javascript:;" class="card-link">访问</a><br>
+                                    <span class="ml-2">{{ blog_list|blog_click_count }}</span>
+                                </li>
+                                <li><a href="javascript:;" class="card-link">点赞</a><br>
+                                    <span class="ml-2">{{ blog_list|blog_like_count }}</span>
+                                </li>
+
+                                <li><a href="javascript:;" class="card-link">评论</a><br>
+                                    <span class="ml-2">{% comment_user_count blog_list.first.author.id %}</span>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="card col-md-10 bg-light" style="">
+                        <div class="card-body">
+                            <h5 class="card-title">最新文章</h5>
+                            <ul style="">
+                                {% for blog in blog_list|slice:5 %}
+                                    <li class="pt-1"><a href="{% url 'blog:blog-detail' blog.id %}"
+                                                        class="card-link"
+                                                        style="">
+                                        <small>{{ blog.title }}</small>
+                                    </a>
+                                    </li>
+
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="card col-md-10 bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">文章标签</h5>
+                            <ul style="">
+                                {% for foo in blog_tag.distinct %}
+                                    <span class="badge badge-info">{{ foo.name }}</span><br>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+
+                <div id="tab-item1" class="tab-item">
+                    {% if blog_list %}
+                        {% for blog in blog_list %}
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    分类：<a href="" class="badge badge-primary">{{ blog.category }}</a>
+                                    {% if request.user.id == blog.author.id %}
+                                        <div style="float: right;" class="small">
+                                            <a href="/blog/blog-edit/?id={{ blog.id }}">编辑</a>
+                                            <a href="javascript:;" id="{{ blog.id }}" class="delete">删除</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <span class="badge badge-danger">{{ blog.blog_type }}</span>
+                                        <a href="{% url 'blog:blog-detail' blog.id %}"
+                                           class="card-link font-weight-bold">{{ blog.title }}</a>
+                                    </h5>
+                                    <p class="card-text"
+                                       style="margin-left: 3rem">{{ blog.content|slice:100 }}...</p>
+                                </div>
+                                <div class="card-footer">
+                            <span style="margin-left:6px;line-height: 2.5rem">
+                            <a href="/blog/{{ blog.author.username }} " style="top: 6px">
+                                <span
+                                        class="badge badge-success">{{ blog.author.id|nickname }}
+                                </span>
+                            </a>发布于{{ blog.modify_time|blog_pub_time }}
+                            </span>
+
+                                    <span
+                                            style="float: right;line-height: 2.5rem">
+                            <span class="icon-my icon-eye">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-kejian"></use>
+                            </svg>
+                                {{ blog.click_nums }}</span>
+                            <span class="icon-my icon-zan">
+                            <svg class="icon" aria-hidden="true" style="">
+                                <use xlink:href="#i-zan-red"></use>
+                            </svg>
+                                {{ blog.like }}</span>
+                            <span class="icon-my icon-say">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-pinglun"></use>
+                            </svg>
+                                {% comment_blog_count blog.id %}</span>
+                        </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div id="tab-item2" class="tab-item">
+                    {% if blog_list_private %}
+                        {% for blog in blog_list_private %}
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    分类：<a href="" class="badge badge-primary">{{ blog.category }}</a>
+                                    {% if request.user.id == blog.author.id %}
+                                        <div style="float: right;" class="small">
+                                            <a href="/blog/blog-edit/?id={{ blog.id }}">编辑</a>
+                                            <a href="javascript:;" id="{{ blog.id }}" class="delete">删除</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <span class="badge badge-danger">{{ blog.blog_type }}</span>
+                                        <a href="{% url 'blog:blog-detail' blog.id %}"
+                                           class="card-link font-weight-bold">{{ blog.title }}</a>
+                                    </h5>
+                                    <p class="card-text"
+                                       style="margin-left: 3rem">{{ blog.content|slice:100 }}...</p>
+                                </div>
+                                <div class="card-footer">
+                            <span style="margin-left:6px;line-height: 2.5rem">
+                            <a href="/blog/{{ blog.author.username }} " style="top: 6px">
+                                <span
+                                        class="badge badge-success">{{ blog.author.id|nickname }}
+                                </span>
+                            </a>发布于{{ blog.modify_time|blog_pub_time }}
+                            </span>
+                                    <span
+                                            style="float: right;line-height: 2.5rem">
+                            <span class="icon-my icon-eye">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-kejian"></use>
+                            </svg>
+                                {{ blog.click_nums }}</span>
+                            <span class="icon-my icon-zan">
+                            <svg class="icon" aria-hidden="true" style="">
+                                <use xlink:href="#i-zan-red"></use>
+                            </svg>
+                                {{ blog.like }}</span>
+                            <span class="icon-my icon-say">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-pinglun"></use>
+                            </svg>
+                                {% comment_blog_count blog.id %}</span>
+                        </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div id="tab-item3" class="tab-item">
+                    {% if blog_list_drafts %}
+                        {% for blog in blog_list_drafts %}
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    分类：<a href="" class="badge badge-primary">{{ blog.category }}</a>
+                                    {% if request.user.id == blog.author.id %}
+                                        <div style="float: right;" class="small">
+                                            <a href="/blog/blog-edit/?id={{ blog.id }}">编辑</a>
+                                            <a href="javascript:;" id="{{ blog.id }}" class="delete">删除</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <span class="badge badge-danger">{{ blog.blog_type }}</span>
+                                        <a href="{% url 'blog:blog-detail' blog.id %}"
+                                           class="card-link font-weight-bold">{{ blog.title }}</a>
+                                    </h5>
+                                    <p class="card-text"
+                                       style="margin-left: 3rem">{{ blog.content|slice:100 }}...</p>
+                                </div>
+                                <div class="card-footer">
+                            <span style="margin-left:6px;line-height: 2.5rem">
+                            <a href="/blog/{{ blog.author.username }} " style="top: 6px">
+                                <span
+                                        class="badge badge-success">{{ blog.author.id|nickname }}
+                                </span>
+                            </a>发布于{{ blog.modify_time|blog_pub_time }}
+                            </span>
+
+                                    <span
+                                            style="float: right;line-height: 2.5rem">
+                            <span class="icon-my icon-eye">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-kejian"></use>
+                            </svg>
+                                {{ blog.click_nums }}</span>
+                            <span class="icon-my icon-zan">
+                            <svg class="icon" aria-hidden="true" style="">
+                                <use xlink:href="#i-zan-red"></use>
+                            </svg>
+                                {{ blog.like }}</span>
+                            <span class="icon-my icon-say">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-pinglun"></use>
+                            </svg>
+                                {% comment_blog_count blog.id %}</span>
+                        </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div id="tab-item4" class="tab-item">
+                    {% if blog_list_del %}
+                        {% for blog in blog_list_del %}
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    分类：<a href="" class="badge badge-primary">{{ blog.category }}</a>
+                                    {% if request.user.id == blog.author.id %}
+                                        <div style="float: right;" class="small">
+                                            <a href="/blog/blog-edit/?id={{ blog.id }}">编辑</a>
+                                            <a href="javascript:;" id="{{ blog.id }}" class="delete">删除</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <span class="badge badge-danger">{{ blog.blog_type }}</span>
+                                        <a href="{% url 'blog:blog-detail' blog.id %}"
+                                           class="card-link font-weight-bold">{{ blog.title }}</a>
+                                    </h5>
+                                    <p class="card-text"
+                                       style="margin-left: 3rem">{{ blog.content|slice:100 }}...</p>
+                                </div>
+                                <div class="card-footer">
+                            <span style="margin-left:6px;line-height: 2.5rem">
+                            <a href="/blog/{{ blog.author.username }} " style="top: 6px">
+                                <span
+                                        class="badge badge-success">{{ blog.author.id|nickname }}
+                                </span>
+                            </a>发布于{{ blog.modify_time|blog_pub_time }}
+                            </span>
+
+                                    <span
+                                            style="float: right;line-height: 2.5rem">
+                            <span class="icon-my icon-eye">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-kejian"></use>
+                            </svg>
+                                {{ blog.click_nums }}</span>
+                            <span class="icon-my icon-zan">
+                            <svg class="icon" aria-hidden="true" style="">
+                                <use xlink:href="#i-zan-red"></use>
+                            </svg>
+                                {{ blog.like }}</span>
+                            <span class="icon-my icon-say">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#i-pinglun"></use>
+                            </svg>
+                                {% comment_blog_count blog.id %}</span>
+                        </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% csrf_token %}
+    <script src="{% static 'js/author.js' %}"></script>
+
+{% endblock %}

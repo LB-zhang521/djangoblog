@@ -1,0 +1,143 @@
+{% load static %}
+{% load blog_tools %}
+<!doctype html>
+
+<html lang="zh" class="h-100">
+
+<head>
+    <meta http-equiv="Content-type" content="text/html utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
+    <meta content="application/vnd.ncd.reference">
+
+    <meta name="referer-policy" content="always">
+    {% block description %}
+        <meta data-n-head="true" data-hid="description" name="description"
+              content="蓝白社区,致力于分享IT技术,原创博客、技术论坛、资源共享等,提供原创、优质、完整内容的IT技术分享社区,社区创始人:半根蓝白,期待与您一起共建更加优质的社区环境,">
+        <meta name="keywords" content="IT技术分享，博客，IT资源共享，蓝白社区，半根蓝白">
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+    <link href='{% static "img/favicon.ico" %}' rel="shortcut icon" >
+    <link href="{% static "css/bs4.pop.css" %}" rel="stylesheet">
+    <script src="{% static "jquery/jquery-3.3.1.min.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap.bundle.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/bs4.pop.js" %}"></script>
+
+    <script src="https://at.alicdn.com/t/font_1886422_4d2tdbccv94.js"></script>
+</head>
+<style>
+    .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+    }
+
+    #sideber_base {
+        float: right;
+        margin-right: 5%;
+        margin-top: 5%;
+    }
+
+    #gotop {
+        width: 80px;
+        position: fixed;
+        cursor: pointer;
+        z-index: 99998;
+        right: 10%;
+        bottom: 80px;
+    }
+
+    /* 小火箭悬停特效 */
+    .show {
+        display: block;
+    }
+
+    #gotop:hover {
+        animation: rubberBand 1s;
+
+    }
+
+    @keyframes rubberBand {
+        from {
+            transform: scale3d(1, 1, 1);
+        }
+
+        30% {
+            transform: scale3d(1.25, 0.75, 1);
+        }
+
+        40% {
+            transform: scale3d(0.75, 1.25, 1);
+        }
+
+        50% {
+            transform: scale3d(1.15, 0.85, 1);
+        }
+
+        65% {
+            transform: scale3d(.95, 1.05, 1);
+        }
+
+        75% {
+            transform: scale3d(1.05, .95, 1);
+        }
+
+        to {
+            transform: scale3d(1, 1, 1);
+        }
+    }
+
+</style>
+<body class="d-flex flex-column h-100">
+{% include 'header.html' %}
+<main role="main" class="flex-shrink-0" style="margin-top: 80px">
+    {% notice %}
+    {% block content %}
+        <div id="sideber_base" class='d-none d-md-block'>
+            <div class="card bg-light mb-3" style="width: 16rem;">
+                <div class="card-header">QQ交流群</div>
+                <div class="card-body">
+                    <img class="card-img-bottom" src="{% static 'img/qqqun.jpg' %}" alt="qq群">
+                </div>
+            </div>
+            <div class="card bg-light  mb-3" style="width: 16rem;">
+                <div class="card-header">微信公众号</div>
+                <div class="card-body">
+                    <div class="card-body">
+                        <img class="card-img-bottom" src="{% static 'img/winxin.jpg' %}" alt="weichat">
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-light mb-3" style="width: 16rem;">
+                <div class="card-header">本站源码</div>
+                <div class="card-body">
+                    <h5 class="card-title">还在整理中......</h5>
+                </div>
+            </div>
+            <div class="card bg-light mb-3" style="width: 16rem;">
+                <div class="card-header">友情链接</div>
+                <div class="card-body">
+                    {% links_friend %}
+                </div>
+            </div>
+            {% ADTag %}
+        </div>
+    {% endblock %}
+    {% block artice %}{% endblock %}
+
+</main>
+<div id="rocket">
+		<span id="gotop">
+			<img height="64px" src="{% static 'img/rocket.svg' %}" alt="返回顶部小火箭">
+		</span>
+</div>
+<script src="{% static "js/base.js" %}"></script>
+ 
+{% include 'footer.html' %}
+</body>
+</html>

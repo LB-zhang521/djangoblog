@@ -1,0 +1,21 @@
+<section id="comments" class="themeform">
+    {% load user_tags %}
+    {% load comments_tags %}
+    <hr>
+    {% if blog_comments %}
+        <div id="commentlist-container" class="comment-tab" style="display: block;">
+            <ol class="commentlist">
+                {% query blog_comments parent_comment=None as parent_comments %}
+                {% for comment_item in parent_comments %}
+                    {% with 0 as depth %}
+                        {% include "comments/comment_item_tree.html" %}
+                    {% endwith %}
+                {% endfor %}
+            </ol>
+        </div>
+        {%  else %}
+        <p>暂时没有评论</p>
+    {% endif %}
+
+
+</section>

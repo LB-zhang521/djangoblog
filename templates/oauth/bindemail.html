@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} 绑定账号|蓝白社区 {% endblock title %}
+{% block content %}
+    <link rel="stylesheet" href="{% static  "css/signin.css" %}">
+    <div class="container text-center">
+        <div class="col-md-6 offset-2">
+            <h2>设置您的用户ID以及绑定邮箱</h2>
+            <hr>
+            <form class="form-signin">
+                     {% csrf_token %}
+                <div class="form-group col-md-10 offset-2">
+                    <label for="inputUsername" class="sr-only">用户ID</label>
+                    <input autocomplete type="text" id="username" class="form-control" placeholder="数字和字母组合8~16位"
+                           required
+                           autofocus>
+                </div>
+                <div class="form-group col-md-10 offset-2">
+                    <label for="inputemail" class="sr-only">邮箱</label>
+                    <input autocomplete type="email" id="email" class="form-control" placeholder="您的邮箱" required
+                           autofocus>
+                </div>
+            </form>
+            <div class="offset-1">
+                <button class="btn btn-lg btn-primary bind" id="bind">提交</button>
+            </div>
+             
+        </div>
+    </div>
+    <script>
+        $('#bind').click(function () {
+            var EmailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+            var UserName = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
+            var username = $('#username').val();
+            email = $('#email').val();
+            if (username == "" || email == "") {
+                bs4pop.notice('请您填写表单呢~', {type: 'danger'})
+            } else if (!UserName.test(username)) {
+                bs4pop.notice('用户名必须数字组合8-16位哦~', {type: 'danger', position: 'topcenter'})
+            } else if (!EmailReg.test(email)) {
+                bs4pop.notice('邮箱格式不对呢~', {type: 'danger'})
+            } else {
+                bs4pop.notice("正在提交...", {type: 'info', position: 'topcenter'});
+                let token = $('[name="csrfmiddlewaretoken"]').attr("value");
+                $.ajax({
+                    url: '/oauth/bindemail/',
+                    type: 'post',
+                    data: {
+                        "username": username,
+                        "email": email,
+                        "csrfmiddlewaretoken": token
+                    },
+                    success: function (data) {
+                        bs4pop.notice(data.msg, {type: data.flag ? 'success' : 'danger', position: 'topcenter'});
+                    },
+                  error: function () {
+                        bs4pop.notice('网络异常！请稍后重试', {type:'danger'})
+                    }  
+           });
+            }
+        })
+    </script>
+{% endblock %}

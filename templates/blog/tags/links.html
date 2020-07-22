@@ -1,0 +1,7 @@
+{% if links %}
+    {% for foo in links %}
+        <a href="{{ foo.link }}">{{ foo.name }}</a><br>
+    {% endfor %}
+{% else %}
+    <p>暂无友链</p>
+{% endif %}

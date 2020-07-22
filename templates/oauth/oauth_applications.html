@@ -1,0 +1,20 @@
+{% load static %}
+{% if apps %}
+    <span>第三方登录</span><br>
+    {% for icon,url in apps %}
+        {% if icon == 'github' %}
+            <a href="{{ url }}">
+                <img class="rounded-circle" style="width: 40px;"
+                     src="{% static 'img/github.png' %}"
+                     alt="github">
+            </a>
+        {% else %}
+            <a href="{{ url }}" rel="nofollow">
+                <img class="rounded-circle" style="width: 40px;"
+                     src="{% static 'img/QQ.png' %}"
+
+                     alt="qq图标">
+            </a>
+        {% endif %}
+    {% endfor %}
+{% endif %}

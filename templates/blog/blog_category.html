@@ -1,0 +1,15 @@
+{% if categorys %}
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'blog:blog_list' %} ">全部</a>
+        </li>
+        {% for cat in categorys %}
+            <li>
+                <a href="{{ url }}?category={{ cat.id }}" class="nav-link">{{ cat.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endif %}
+
+

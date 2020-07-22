@@ -1,0 +1,23 @@
+{% load user_tags %}
+<div id="comments" class="comments-area">
+
+    <div id="respond" class="comment-respond">
+        <form action="{% url 'comment:post_comment' %}" method="post" id="commentform"
+              class="comment-form">{% csrf_token %}
+            <textarea type="text" placeholder="博主需要您的鼓励，才能有动力创作" name="content"
+                      class="content"></textarea>
+            <input type="text" style="display: none;" name="parent_comment_id" class="parent_comment_id">
+            <div class="form-submit text-center">
+                <input name="submit" type="button" id="post_submit" class="btn btn-success col-xm-12 col-md-1"
+                       value="提交" readonly>
+                <small class="cancel-comment" id="cancel_comment" style="display: none">
+                    <a href="javascript:;" class="btn btn-dark cancel" onclick="cancel_reply()">取消</a>
+                </small>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+

@@ -1,0 +1,52 @@
+{% if notice %}
+    <style>
+        .notice .card-body {
+            height: 100px;
+            overflow: hidden;
+        }
+
+        @keyframes anis {
+            0% {
+                transform: translateY(0)
+            }
+            100% {
+                transform: translateY(-{{ notice.count }}00px)
+            }
+        }
+
+        .notice .card-body .text-content {
+            animation: anis {% widthratio  notice|length 1 2  %}s linear infinite;
+            animation-direction: alternate;
+        }
+
+        .notice .text-content:hover {
+            animation-play-state: paused;
+        }
+
+        .closenotice {
+            display: none;
+        }
+    </style>
+    <div class="container pt-0">
+        <div class="notice col-md-12 pt-0" style="margin-bottom: 0">
+            <div class="card-header text-right">
+             <span class="close_ban"
+                   style="cursor: pointer"><span>&times;</span>关闭公告</span>
+            </div>
+            <div class="card bg-danger card-body">
+                <div class="text-content text-white text-center">
+                    {% for foo in notice %}
+                        <h5 class="card-title">{{ foo.title }} </h5>
+                        <p class="card-text">{{ foo.content }}</p>
+                        <p class="card-text text-right">{{ foo.last_mod_time }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('.close_ban').click(function () {
+            $('.notice').addClass('closenotice')
+        })
+    </script>
+{% endif %}

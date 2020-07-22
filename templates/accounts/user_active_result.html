@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱绑定结果</title>
+</head>
+<body>
+<script>
+    function countDown() {
+        var time = document.getElementById("Time");
+        if (time.innerHTML == 0) {
+            //等于0时清除计时
+            window.location.href = "{{ url }}";
+            rel = "external nofollow";
+        } else {
+            time.innerHTML = time.innerHTML - 1;
+        }
+    }
+    {% if flag %}
+        window.setInterval("countDown()", 1000);
+    {% endif %}
+</script>
+{% if flag == None %}
+    <p>网络异常，请检查您的网络！！！</p>
+{% endif %}
+{% if flag %}
+    <p>{{ msg }} <span id="Time">5</span>秒后跳转到主页面</p>
+{% endif %}
+{% if not flag %}
+    <p>{{ msg }}</p>
+{% endif %}
+
+</body>
+</html>
