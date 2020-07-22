@@ -83,8 +83,8 @@ python manage.py migrate
 
 **回调地址：**
 
-qq：http://你的域名/oauth/authorize?type=qq
-github：http://域名/oauth/oauthorize?type=github
+- qq：http://你的域名/oauth/authorize?type=qq
+- github：http://域名/oauth/oauthorize?type=github
 
 ## 声明
 
