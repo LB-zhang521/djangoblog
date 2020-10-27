@@ -10,7 +10,7 @@ cffi==1.14.0
 chardet==3.0.4
 command-not-found==0.3
 crcmod==1.7
-cryptography==2.9.2
+cryptography==3.2
 cupshelpers==1.0
 defer==1.0.6
 defusedxml==0.7.0rc1
