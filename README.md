@@ -24,7 +24,7 @@
 
 
 
-![文章详情页](https://blog.bglb.work/img/1595410549486.png?x-oss-process=style/blog_img)
+![文章详情页](https://blog.bglb.work/img/1605858237600.png?x-oss-process=style/blog_img)
 
 
 
